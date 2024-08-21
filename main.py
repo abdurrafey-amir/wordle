@@ -37,13 +37,15 @@ font = pygame.font.Font("freesansbold.ttf", 50)
 grey = pygame.Color('grey12')
 white = (255, 255, 255)
 green = (0, 255, 0)
+red = (255, 0, 0)
+yellow = (255, 255, 0)
 
 
 
-
+rects = [[], [], [], [], []]
 def draw_board():
     global rects
-    rects = [[], [], [], [], []]
+    
     
     for col in range(5):
         for row in range(6):
@@ -128,20 +130,42 @@ def input_letter(letter):
         print('Game Over')
     # print(turn)
 
+r_green = False
+r_yellow = False
+r_red = False
+recs = []
+
+
 def checkword(rects):
-    global turn, row, running
+    global turn, row, running, r_green, r_yellow, r_red, recs
     # print(word[turn])
     # print(board[row][turn])
+    # correct
+    rect = rects[turn-1][row]
     if word[turn-1] == board[row][turn-1]:
-        
-        rect = rects[turn-1][row]
-        pygame.draw.rect(screen, green, rect, 2)
-        print('You Win')
+        r_green = True
+        # rect_green = rects[turn-1][row]
+        recs.append(green)
+        recs.append(rect)
+        # recs.append(pygame.draw.rect(screen, green, rect, 2))
         # running = False
-    
+    elif board[row][turn-1] in word:
+        r_yellow = True
+        # rect_yellow = rects[turn-1][row]
+        recs.append(yellow)
+        recs.append(rect)
+        # recs.append(pygame.draw.rect(screen, yellow, rect, 2))
+    # wrong
+    else:
+        r_red = True
+        # rect_red = rects[turn-1][row]
+        recs.append(red)
+        recs.append(rect)
+        # recs.append(pygame.draw.rect(screen, red, rect, 2))
+   
+    # return rect
     # rect = rects[row]
     
-    pass
 
 
 # other rects
@@ -151,6 +175,7 @@ info_text = font.render('Wordle', True, (255, 255, 255))
 
 
 # main loop
+clicked = False
 running = True
 while running:
     # fps
@@ -161,6 +186,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
+            clicked = True
             letter(event.key)
 
             # if event.key == pygame.K_a:
@@ -223,11 +249,25 @@ while running:
     pygame.draw.rect(screen, (255, 255, 255), info, 2)
     # input_letter()
     checkword(rects)
+    
+    # if r_green:
+    #     pygame.draw.rect(screen, green, rec, 2)
+    # elif r_yellow:
+    #     pygame.draw.rect(screen, yellow, rec, 2)
+    # elif r_red:
+    #     pygame.draw.rect(screen, red, rec, 2)
+    # for rec in recs:
+    #    rec
     inf = screen.blit(info_text, (WIDTH / 2 - 70, HEIGHT - 60))
     
+    if clicked:
+        for i in range(0, len(recs), 2):
+            # print(recs[i], recs[i+1])
+            pygame.draw.rect(screen, recs[i], recs[i+1], 2)
 
     # update display
     pygame.display.flip()
 
 pygame.quit()
-print(rects)
+# print(rects)
+# print(recs)
