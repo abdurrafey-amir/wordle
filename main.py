@@ -1,4 +1,14 @@
 import pygame
+import requests
+import random
+
+
+# words
+words = None
+api = requests.get('https://api.frontendexpert.io/api/fe/wordle-words').json()
+words = api
+word = list(random.choice(words))
+print(word)
 
 
 # general setup
@@ -118,11 +128,19 @@ def input_letter(letter):
         print('Game Over')
     # print(turn)
 
-def color(rects):
-    global turn, row
-    rect = rects[turn-1][row]
+def checkword(rects):
+    global turn, row, running
+    # print(word[turn])
+    # print(board[row][turn])
+    if word[turn-1] == board[row][turn-1]:
+        
+        rect = rects[turn-1][row]
+        pygame.draw.rect(screen, green, rect, 2)
+        print('You Win')
+        # running = False
+    
     # rect = rects[row]
-    pygame.draw.rect(screen, green, rect, 2)
+    
     pass
 
 
@@ -204,7 +222,7 @@ while running:
     rects = draw_board()
     pygame.draw.rect(screen, (255, 255, 255), info, 2)
     # input_letter()
-    color(rects)
+    checkword(rects)
     inf = screen.blit(info_text, (WIDTH / 2 - 70, HEIGHT - 60))
     
 
