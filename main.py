@@ -1,4 +1,5 @@
 import pygame
+import pygame.mixer
 import requests
 import random
 
@@ -13,6 +14,7 @@ print(word_list)
 
 
 # general setup
+pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
 
 WIDTH = 500
@@ -32,6 +34,12 @@ board = [
     [' - ', ' - ', ' - ', ' - ', ' - '],
 ]
 
+# sounds
+correct = pygame.mixer.Sound('correct.mp3')
+middle = pygame.mixer.Sound('middle.mp3')
+wrong = pygame.mixer.Sound('wrong.mp3')
+
+# font
 font = pygame.font.Font("freesansbold.ttf", 50)
 
 # colors
@@ -163,12 +171,15 @@ def checkword(rects):
         for i in range(5):
             rect = rects[i][row]
             if word_list[i] == board[row][i]:
+                # pygame.mixer.Sound.play(correct)
                 recs.append((green, rect))
 
                 # cor_word.append(board[row][i])
             elif board[row][i] in word_list:
+                # pygame.mixer.Sound.play(middle)
                 recs.append((yellow, rect))
             elif board[row][i] not in word_list:
+                # pygame.mixer.Sound.play(wrong)
                 recs.append((red, rect))
     try:
         for i in range(len(recs)):
