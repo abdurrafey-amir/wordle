@@ -120,15 +120,27 @@ row = 0
 def input_letter(letter):
     global turn, row, running
     letter = letter.upper()
-    board[row][turn] = letter
-    turn += 1
+    
+    # turns
     if turn == 5:
             turn = 0
-            row += 1
+            row +=1
+    
+    # game end
     if row == 6:
         running = False
         print('Game Over')
     # print(turn)
+    
+    # print(turn)
+    if running:
+        board[row][turn] = letter
+        turn += 1
+    
+    
+    
+    # print(turn)
+    
 
 r_green = False
 r_yellow = False
@@ -141,30 +153,15 @@ def checkword(rects):
     # print(word[turn])
     # print(board[row][turn])
     # correct
-    rect = rects[turn-1][row]
-    if word[turn-1] == board[row][turn-1]:
-        r_green = True
-        # rect_green = rects[turn-1][row]
-        recs.append(green)
-        recs.append(rect)
-        # recs.append(pygame.draw.rect(screen, green, rect, 2))
-        # running = False
-    elif board[row][turn-1] in word:
-        r_yellow = True
-        # rect_yellow = rects[turn-1][row]
-        recs.append(yellow)
-        recs.append(rect)
-        # recs.append(pygame.draw.rect(screen, yellow, rect, 2))
-    # wrong
-    else:
-        r_red = True
-        # rect_red = rects[turn-1][row]
-        recs.append(red)
-        recs.append(rect)
-        # recs.append(pygame.draw.rect(screen, red, rect, 2))
-   
-    # return rect
-    # rect = rects[row]
+    if running:
+        for i in range(5):
+            rect = rects[i][row]
+            if word[i] == board[row][i]:
+                recs.append((green, rect))
+            elif board[row][i] in word:
+                recs.append((yellow, rect))
+            elif board[row][i] not in word:
+                recs.append((red, rect))
     
 
 
@@ -261,9 +258,8 @@ while running:
     inf = screen.blit(info_text, (WIDTH / 2 - 70, HEIGHT - 60))
     
     if clicked:
-        for i in range(0, len(recs), 2):
-            # print(recs[i], recs[i+1])
-            pygame.draw.rect(screen, recs[i], recs[i+1], 2)
+        for color, rect in recs:
+            pygame.draw.rect(screen, color, rect, 2)
 
     # update display
     pygame.display.flip()
