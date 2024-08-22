@@ -142,28 +142,47 @@ def input_letter(letter):
     # print(turn)
     
 
-r_green = False
-r_yellow = False
-r_red = False
 recs = []
+cor_word = []
 
 
 def checkword(rects):
-    global turn, row, running, r_green, r_yellow, r_red, recs
+    global turn, row, running, recs, cor_word
     # print(word[turn])
     # print(board[row][turn])
     # correct
+    
+    # clean the list
+    clean_letters = cleanlist(cor_word)
+    letters = clean_letters[:5]
+
     if running:
         for i in range(5):
             rect = rects[i][row]
             if word[i] == board[row][i]:
                 recs.append((green, rect))
+                cor_word.append(board[row][i])
             elif board[row][i] in word:
                 recs.append((yellow, rect))
             elif board[row][i] not in word:
                 recs.append((red, rect))
-    
 
+    if letters == word:
+            running = False
+            print('You won')
+
+    print(letters)
+    
+def cleanlist(list):
+    clean_list = []
+    seen = {}
+    for letter in list:
+        if letter not in seen:
+            seen[letter] = True
+            clean_list.append(letter)
+    
+    return clean_list
+        
 
 # other rects
 info = pygame.Rect(0, HEIGHT - 80, WIDTH, 80)
@@ -266,4 +285,13 @@ while running:
 
 pygame.quit()
 # print(rects)
-# print(recs)
+
+
+# clean_list = []
+# seen = {}
+# for letter in cor_word:
+#     if letter not in seen:
+#         seen[letter] = True
+#         clean_list.append(letter)
+
+# print(seen)
