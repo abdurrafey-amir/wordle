@@ -7,8 +7,9 @@ import random
 words = None
 api = requests.get('https://api.frontendexpert.io/api/fe/wordle-words').json()
 words = api
-word = list(random.choice(words))
-print(word)
+word = random.choice(words).upper()
+word_list = list(word)
+print(word_list)
 
 
 # general setup
@@ -23,12 +24,12 @@ clock = pygame.time.Clock()
 
 # board
 board = [
-    ['-', '-', '-', '-', '-'],
-    ['-', '-', '-', '-', '-'],
-    ['-', '-', '-', '-', '-'],
-    ['-', '-', '-', '-', '-'],
-    ['-', '-', '-', '-', '-'],
-    ['-', '-', '-', '-', '-'],
+    [' - ', ' - ', ' - ', ' - ', ' - '],
+    [' - ', ' - ', ' - ', ' - ', ' - '],
+    [' - ', ' - ', ' - ', ' - ', ' - '],
+    [' - ', ' - ', ' - ', ' - ', ' - '],
+    [' - ', ' - ', ' - ', ' - ', ' - '],
+    [' - ', ' - ', ' - ', ' - ', ' - '],
 ]
 
 font = pygame.font.Font("freesansbold.ttf", 50)
@@ -52,7 +53,7 @@ def draw_board():
             rect = pygame.FRect((col * 100 + 12, row * 100 + 12, 75, 75))
             pygame.draw.rect(screen, (255, 255, 255), rect, 2)
             text = font.render(board[row][col], True, (255, 255, 255))
-            screen.blit(text, (col * 100 + 35, row * 100 + 25))
+            screen.blit(text, (col * 100 + 30, row * 100 + 25))
             rects[col].append(rect)
     return rects
 
@@ -129,7 +130,9 @@ def input_letter(letter):
     # game end
     if row == 6:
         running = False
+        pass
         print('Game Over')
+        print(f'The word was {word}')
     # print(turn)
     
     # print(turn)
@@ -137,56 +140,72 @@ def input_letter(letter):
         board[row][turn] = letter
         turn += 1
     
-    
-    
+    # info_text = font.render(f'Wordle {str(board[row][turn])}', True, (255, 255, 255))
+    # return info_text
     # print(turn)
     
 
 recs = []
-cor_word = []
+# cor_word = []
 
 
 def checkword(rects):
-    global turn, row, running, recs, cor_word
-    # print(word[turn])
+    global turn, row, running, recs
+    # print(word_list[turn])
     # print(board[row][turn])
     # correct
     
     # clean the list
-    clean_letters = cleanlist(cor_word)
-    letters = clean_letters[:5]
-
+    # clean_letters = cleanlist(cor_word)
+    # letters = clean_letters[:5]
+    # word_list = ['G', 'A', 'M', 'E', 'R']
     if running:
         for i in range(5):
             rect = rects[i][row]
-            if word[i] == board[row][i]:
+            if word_list[i] == board[row][i]:
                 recs.append((green, rect))
-                cor_word.append(board[row][i])
-            elif board[row][i] in word:
+
+                # cor_word.append(board[row][i])
+            elif board[row][i] in word_list:
                 recs.append((yellow, rect))
-            elif board[row][i] not in word:
+            elif board[row][i] not in word_list:
                 recs.append((red, rect))
+    try:
+        for i in range(len(recs)):
+            if recs[i][0] == green:
+                if recs[i+1][0] == green:
+                    if recs[i+2][0] == green:
+                        if recs[i+3][0] == green:
+                            if recs[i+4][0] == green:
+                                print(f'You won in {row + 1} turns')
+                                running = False
+                                break
+    except IndexError:
+        pass
 
-    if letters == word:
-            running = False
-            print('You won')
-
-    print(letters)
+    # print(letters)
     
-def cleanlist(list):
-    clean_list = []
-    seen = {}
-    for letter in list:
-        if letter not in seen:
-            seen[letter] = True
-            clean_list.append(letter)
+# def cleanlist(list):
+#     clean_list = []
+#     seen = {}
+#     for letter in list:
+#         if letter not in seen:
+#             seen[letter] = True
+#             clean_list.append(letter)
     
-    return clean_list
+#     return clean_list
         
 
 # other rects
 info = pygame.Rect(0, HEIGHT - 80, WIDTH, 80)
-info_text = font.render('Wordle', True, (255, 255, 255))
+# info_text = font.render(f'Wordle ', True, (255, 255, 255))
+# info text
+# add the correct letter to the info as its typed
+# info_text = font.render(f'Wordle {board[row][turn]}', True, (255, 255, 255))
+
+
+
+# info_text = font.render(f'Wordle', True, (255, 255, 255))
 
 
 
@@ -274,7 +293,11 @@ while running:
     #     pygame.draw.rect(screen, red, rec, 2)
     # for rec in recs:
     #    rec
-    inf = screen.blit(info_text, (WIDTH / 2 - 70, HEIGHT - 60))
+    info_text = font.render(f'Turns: {5 - row}', True, (255, 255, 255))
+    # print(board)
+    # print(board[row][turn])
+    
+    screen.blit(info_text, (WIDTH / 2 - 100, HEIGHT - 65))
     
     if clicked:
         for color, rect in recs:
