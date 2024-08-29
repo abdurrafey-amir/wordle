@@ -15,3 +15,5 @@ To play the game, either download the zip from the release and download the pack
 # Exe
 
 or if you want to just play without the code then download the `game.exe` file and run it. 
+
+![game](image.png)
